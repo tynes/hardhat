@@ -1,5 +1,11 @@
 # hardhat
 
+## 2.9.2
+
+### Patch Changes
+
+- 6ff1cb03: Fixed bug (#2352) preventing the disabling of node task logging via hardhat.config.
+
 ## 2.9.1
 
 ### Patch Changes
