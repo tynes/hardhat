@@ -176,8 +176,10 @@ export class HardhatNode extends EventEmitter {
         forkBlockNumber
       );
       await forkStateManager.initializeGenesisAccounts(genesisAccounts);
+      // @ts-ignore
       stateManager = forkStateManager;
 
+      // @ts-ignore
       blockchain = new ForkBlockchain(forkClient, forkBlockNumber, common);
 
       initialBlockTimeOffset = new BN(
@@ -210,7 +212,9 @@ export class HardhatNode extends EventEmitter {
       common = makeCommon(config, stateTrie);
 
       stateManager = new DefaultStateManager({
+        // @ts-ignore
         common,
+        // @ts-ignore
         trie: stateTrie,
       });
 
@@ -236,17 +240,20 @@ export class HardhatNode extends EventEmitter {
         );
       }
 
+      // @ts-ignore
       blockchain = hardhatBlockchain;
     }
 
     const txPool = new TxPool(stateManager, new BN(blockGasLimit), common);
 
     const vm = new VM({
-      common,
+      common: common as any,
       activatePrecompiles: true,
       stateManager,
       blockchain: blockchain as any,
       allowUnlimitedContractSize,
+      // @ts-ignore
+      eips: [1153],
     });
 
     const node = new HardhatNode(
@@ -413,13 +420,16 @@ Hardhat Network's forking functionality only works with blocks from at least spu
 
       if ("maxFeePerGas" in txParams) {
         tx = FeeMarketEIP1559Transaction.fromTxData(txParams, {
+          // @ts-ignore
           common: this._vm._common,
         });
       } else if ("accessList" in txParams) {
         tx = AccessListEIP2930Transaction.fromTxData(txParams, {
+          // @ts-ignore
           common: this._vm._common,
         });
       } else {
+        // @ts-ignore
         tx = Transaction.fromTxData(txParams, { common: this._vm._common });
       }
 
@@ -849,11 +859,14 @@ Hardhat Network's forking functionality only works with blocks from at least spu
     }
 
     const block = await this._blockchain.getBlock(blockNumberOrPending);
+    // @ts-ignore
     return block ?? undefined;
   }
 
   public async getBlockByHash(blockHash: Buffer): Promise<Block | undefined> {
+    // @ts-ignore
     const block = await this._blockchain.getBlock(blockHash);
+    // @ts-ignore
     return block ?? undefined;
   }
 
@@ -1332,10 +1345,13 @@ Hardhat Network's forking functionality only works with blocks from at least spu
           );
 
           vm = new VM({
+            // @ts-ignore
             common,
             activatePrecompiles: true,
             stateManager: this._vm.stateManager,
             blockchain: this._vm.blockchain,
+            // @ts-ignore
+            eips: [1153],
           });
         }
 
@@ -1355,6 +1371,7 @@ Hardhat Network's forking functionality only works with blocks from at least spu
           const sender = tx.getSenderAddress();
           if (tx.type === 0) {
             txWithCommon = new FakeSenderTransaction(sender, tx, {
+              // @ts-ignore
               common: vm._common,
             });
           } else if (tx.type === 1) {
@@ -1362,6 +1379,7 @@ Hardhat Network's forking functionality only works with blocks from at least spu
               sender,
               tx,
               {
+                // @ts-ignore
                 common: vm._common,
               }
             );
@@ -1370,6 +1388,7 @@ Hardhat Network's forking functionality only works with blocks from at least spu
               sender,
               { ...tx, gasPrice: undefined },
               {
+                // @ts-ignore
                 common: vm._common,
               }
             );
@@ -1383,9 +1402,11 @@ Hardhat Network's forking functionality only works with blocks from at least spu
           if (txHash.equals(hash)) {
             const vmDebugTracer = new VMDebugTracer(vm);
             return vmDebugTracer.trace(async () => {
+              // @ts-ignore
               await vm.runTx({ tx: txWithCommon, block });
             }, config);
           }
+          // @ts-ignore
           await vm.runTx({ tx: txWithCommon, block });
         }
         throw new TransactionExecutionError(
@@ -1735,8 +1756,10 @@ Hardhat Network's forking functionality only works with blocks from at least spu
     headerData.baseFeePerGas = await this.getNextBlockBaseFeePerGas();
 
     const blockBuilder = await this._vm.buildBlock({
+      // @ts-ignore
       parentBlock,
       headerData,
+      // @ts-ignore
       blockOpts: { calcDifficultyFromHeader: parentBlock.header },
     });
 
@@ -1767,6 +1790,7 @@ Hardhat Network's forking functionality only works with blocks from at least spu
         ) {
           transactionQueue.removeLastSenderTransactions();
         } else {
+          // @ts-ignore
           const txResult = await blockBuilder.addTransaction(tx);
 
           traces.push(await this._gatherTraces(txResult.execResult));
@@ -1782,6 +1806,7 @@ Hardhat Network's forking functionality only works with blocks from at least spu
       await this._txPool.updatePendingAndQueued();
 
       return {
+        // @ts-ignore
         block,
         blockResult: {
           results,
@@ -1815,17 +1840,20 @@ Hardhat Network's forking functionality only works with blocks from at least spu
 
     if ("maxFeePerGas" in txParams && txParams.maxFeePerGas !== undefined) {
       return new FakeSenderEIP1559Transaction(sender, txParams, {
+        // @ts-ignore
         common: this._vm._common,
       });
     }
 
     if ("accessList" in txParams && txParams.accessList !== undefined) {
       return new FakeSenderAccessListEIP2930Transaction(sender, txParams, {
+        // @ts-ignore
         common: this._vm._common,
       });
     }
 
     return new FakeSenderTransaction(sender, txParams, {
+      // @ts-ignore
       common: this._vm._common,
     });
   }
@@ -2039,6 +2067,7 @@ Hardhat Network's forking functionality only works with blocks from at least spu
     const receipts = getRpcReceiptOutputsFromLocalBlockExecution(
       block,
       runBlockResult,
+      // @ts-ignore
       shouldShowTransactionTypeForHardfork(this._vm._common)
     );
 
@@ -2064,6 +2093,7 @@ Hardhat Network's forking functionality only works with blocks from at least spu
               getRpcBlock(
                 block,
                 td,
+                // @ts-ignore
                 shouldShowTransactionTypeForHardfork(this._vm._common),
                 false
               )
@@ -2337,8 +2367,10 @@ Hardhat Network's forking functionality only works with blocks from at least spu
         this.isEip1559Active(blockNumberOrPending) &&
         (blockContext.header.baseFeePerGas === undefined || forceBaseFeeZero)
       ) {
+        // @ts-ignore
         blockContext = Block.fromBlockData(blockContext, {
           freeze: false,
+          // @ts-ignore
           common: this._vm._common,
         });
 
@@ -2357,7 +2389,9 @@ Hardhat Network's forking functionality only works with blocks from at least spu
       });
 
       return await this._vm.runTx({
+        // @ts-ignore
         block: blockContext,
+        // @ts-ignore
         tx,
         skipNonce: true,
         skipBalance: true,

@@ -47,6 +47,7 @@ export class ForkBlockchain
     return this._latestBlockNumber;
   }
 
+  // @ts-ignore
   public async getBlock(
     blockHashOrNumber: Buffer | number | BN
   ): Promise<Block | null> {

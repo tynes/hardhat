@@ -10,6 +10,7 @@ import { HardhatBlockchainInterface } from "./types/HardhatBlockchainInterface";
 
 /* eslint-disable @nomiclabs/hardhat-internal-rules/only-hardhat-error */
 
+// @ts-ignore
 export class HardhatBlockchain
   extends BlockchainBase
   implements HardhatBlockchainInterface

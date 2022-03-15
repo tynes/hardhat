@@ -765,6 +765,7 @@ describe("HardhatNode", () => {
         const afterBlockEvent = await runBlockAndGetAfterBlockEvent(
           forkedNode["_vm"],
           {
+            // @ts-ignore
             block,
             generate: true,
             skipBlockValidation: true,
@@ -775,6 +776,7 @@ describe("HardhatNode", () => {
 
         await forkedNode["_vm"].blockchain.putBlock(modifiedBlock);
         await forkedNode["_saveBlockAsSuccessfullyRun"](
+          // @ts-ignore
           modifiedBlock,
           afterBlockEvent
         );

@@ -39,6 +39,7 @@ describe("Tx Pool", () => {
           it("adds the transaction to pending", async () => {
             await stateManager.putAccount(
               address,
+              // @ts-ignore
               Account.fromAccountData({ nonce: new BN(0) })
             );
             const tx = createTestFakeTransaction({
@@ -57,6 +58,7 @@ describe("Tx Pool", () => {
           it("queues the transaction", async () => {
             await stateManager.putAccount(
               address,
+              // @ts-ignore
               Account.fromAccountData({ nonce: new BN(0) })
             );
             const tx = createTestFakeTransaction({
@@ -74,6 +76,7 @@ describe("Tx Pool", () => {
           it("throws an error", async () => {
             await stateManager.putAccount(
               address,
+              // @ts-ignore
               Account.fromAccountData({ nonce: new BN(1) })
             );
             const tx = createTestFakeTransaction({
@@ -94,6 +97,7 @@ describe("Tx Pool", () => {
         beforeEach(async () => {
           await stateManager.putAccount(
             address,
+            // @ts-ignore
             Account.fromAccountData({ nonce: new BN(0) })
           );
         });
@@ -199,6 +203,7 @@ describe("Tx Pool", () => {
           it("throws an error", async () => {
             await stateManager.putAccount(
               address,
+              // @ts-ignore
               Account.fromAccountData({ nonce: 1 })
             );
             const tx = createTestFakeTransaction({
@@ -217,6 +222,7 @@ describe("Tx Pool", () => {
           it("should replace a pending transaction", async function () {
             await stateManager.putAccount(
               address,
+              // @ts-ignore
               Account.fromAccountData({ balance: new BN(10).pow(new BN(18)) })
             );
             const tx1a = createTestFakeTransaction({
@@ -242,6 +248,7 @@ describe("Tx Pool", () => {
           it("should replace a queued transaction", async function () {
             await stateManager.putAccount(
               address,
+              // @ts-ignore
               Account.fromAccountData({ balance: new BN(10).pow(new BN(18)) })
             );
             const tx2a = createTestFakeTransaction({
@@ -268,6 +275,7 @@ describe("Tx Pool", () => {
           it("should throw if the new gas price is not at least 10% higher (pending tx)", async function () {
             await stateManager.putAccount(
               address,
+              // @ts-ignore
               Account.fromAccountData({ balance: new BN(10).pow(new BN(18)) })
             );
 
@@ -327,6 +335,7 @@ describe("Tx Pool", () => {
           it("should throw if the new gas price is not at least 10% higher (queued tx)", async function () {
             await stateManager.putAccount(
               address,
+              // @ts-ignore
               Account.fromAccountData({ balance: new BN(10).pow(new BN(18)) })
             );
             const tx2a = createTestFakeTransaction({
@@ -364,10 +373,12 @@ describe("Tx Pool", () => {
       beforeEach(async () => {
         await stateManager.putAccount(
           address1,
+          // @ts-ignore
           Account.fromAccountData({ nonce: new BN(0) })
         );
         await stateManager.putAccount(
           address2,
+          // @ts-ignore
           Account.fromAccountData({ nonce: new BN(0) })
         );
       });
@@ -550,6 +561,7 @@ describe("Tx Pool", () => {
         const address = randomAddress();
         await stateManager.putAccount(
           address,
+          // @ts-ignore
           Account.fromAccountData({ nonce: 1 })
         );
 
@@ -590,6 +602,7 @@ describe("Tx Pool", () => {
         const address = randomAddress();
         await stateManager.putAccount(
           address,
+          // @ts-ignore
           Account.fromAccountData({
             nonce: new BN(0),
             balance: new BN(21000 * 900 + 5 - 1),
@@ -628,6 +641,7 @@ describe("Tx Pool", () => {
       beforeEach(async () => {
         await stateManager.putAccount(
           address,
+          // @ts-ignore
           Account.fromAccountData({ nonce: new BN(0) })
         );
       });
@@ -716,6 +730,7 @@ describe("Tx Pool", () => {
 
       await stateManager.putAccount(
         signedTx.getSenderAddress(),
+        // @ts-ignore
         Account.fromAccountData({
           nonce: 1,
           balance: new BN(10).pow(new BN(18)),
@@ -746,6 +761,7 @@ describe("Tx Pool", () => {
 
       await stateManager.putAccount(
         signedTx.getSenderAddress(),
+        // @ts-ignore
         Account.fromAccountData({
           nonce: 3,
           balance: new BN(10).pow(new BN(18)),
@@ -766,6 +782,7 @@ describe("Tx Pool", () => {
     beforeEach(async () => {
       await stateManager.putAccount(
         address,
+        // @ts-ignore
         Account.fromAccountData({ nonce: new BN(0) })
       );
     });
@@ -839,6 +856,7 @@ describe("Tx Pool", () => {
     beforeEach(async () => {
       await stateManager.putAccount(
         address1,
+        // @ts-ignore
         Account.fromAccountData({
           nonce: new BN(0),
           balance: new BN(10).pow(new BN(18)),
@@ -846,6 +864,7 @@ describe("Tx Pool", () => {
       );
       await stateManager.putAccount(
         address2,
+        // @ts-ignore
         Account.fromAccountData({
           nonce: new BN(0),
           balance: new BN(10).pow(new BN(18)),
@@ -914,6 +933,7 @@ describe("Tx Pool", () => {
 
       await stateManager.putAccount(
         address1,
+        // @ts-ignore
         Account.fromAccountData({
           nonce: new BN(1),
           balance: new BN(10).pow(new BN(18)),
@@ -921,6 +941,7 @@ describe("Tx Pool", () => {
       );
       await stateManager.putAccount(
         address2,
+        // @ts-ignore
         Account.fromAccountData({
           nonce: new BN(1),
           balance: new BN(10).pow(new BN(18)),
@@ -948,6 +969,7 @@ describe("Tx Pool", () => {
 
       await stateManager.putAccount(
         address1,
+        // @ts-ignore
         Account.fromAccountData({ nonce: new BN(0), balance: new BN(0) })
       );
 
@@ -969,6 +991,7 @@ describe("Tx Pool", () => {
 
       await stateManager.putAccount(
         address1,
+        // @ts-ignore
         Account.fromAccountData({ nonce: new BN(0), balance: new BN(0) })
       );
 
@@ -982,6 +1005,7 @@ describe("Tx Pool", () => {
       const sender = randomAddress();
       await stateManager.putAccount(
         sender,
+        // @ts-ignore
         Account.fromAccountData({
           nonce: new BN(0),
           balance: new BN(10).pow(new BN(20)),
@@ -1089,6 +1113,7 @@ describe("Tx Pool", () => {
       const sender = randomAddress();
       await stateManager.putAccount(
         sender,
+        // @ts-ignore
         Account.fromAccountData({
           nonce: new BN(0),
           balance: new BN(10).pow(new BN(20)),
@@ -1199,6 +1224,7 @@ describe("Tx Pool", () => {
       const address = randomAddress();
       await stateManager.putAccount(
         address,
+        // @ts-ignore
         Account.fromAccountData({ nonce: new BN(0) })
       );
       const tx1 = createTestOrderedTransaction({

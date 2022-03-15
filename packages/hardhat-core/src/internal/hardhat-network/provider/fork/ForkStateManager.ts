@@ -1,4 +1,7 @@
-import { DefaultStateManager } from "@ethereumjs/vm/dist/state";
+import {
+  DefaultStateManager,
+  TransientStorage,
+} from "@ethereumjs/vm/dist/state";
 import { EIP2929StateManager } from "@ethereumjs/vm/dist/state/interface";
 import {
   Account,
@@ -57,6 +60,7 @@ export class ForkStateManager implements EIP2929StateManager {
   private _accessedStorageReverted: Array<Map<string, Set<string>>> = [
     new Map(),
   ];
+  private _transientStorage: TransientStorage;
 
   constructor(
     private readonly _jsonRpcClient: JsonRpcClient,
@@ -65,6 +69,7 @@ export class ForkStateManager implements EIP2929StateManager {
     this._state = ImmutableMap<string, ImmutableRecord<AccountState>>();
 
     this._stateRootToState.set(this._initialStateRoot, this._state);
+    this._transientStorage = new TransientStorage();
   }
 
   public async initializeGenesisAccounts(genesisAccounts: GenesisAccount[]) {
@@ -98,6 +103,7 @@ export class ForkStateManager implements EIP2929StateManager {
     this._stateRootToState.set(this._initialStateRoot, this._state);
   }
 
+  // @ts-ignore
   public copy(): ForkStateManager {
     const fsm = new ForkStateManager(
       this._jsonRpcClient,
@@ -105,12 +111,14 @@ export class ForkStateManager implements EIP2929StateManager {
     );
     fsm._state = this._state;
     fsm._stateRoot = this._stateRoot;
+    fsm._transientStorage = this._transientStorage.copy();
 
     // because this map is append-only we don't need to copy it
     fsm._stateRootToState = this._stateRootToState;
     return fsm;
   }
 
+  // @ts-ignore
   public async getAccount(address: Address): Promise<Account> {
     const localAccount = this._state.get(address.toString());
 
@@ -151,6 +159,7 @@ export class ForkStateManager implements EIP2929StateManager {
     return Account.fromAccountData({ nonce, balance, codeHash });
   }
 
+  // @ts-ignore
   public async putAccount(address: Address, account: Account): Promise<void> {
     this._putAccount(address, account);
   }
@@ -421,6 +430,22 @@ export class ForkStateManager implements EIP2929StateManager {
       address,
       slot
     );
+  }
+
+  public getContractTransientStorage(address: Address, key: Buffer): Buffer {
+    return (
+      DefaultStateManager as any
+    ).prototype.getContractTransientStorage.call(this, address, key);
+  }
+
+  public putContractTransientStorage(
+    address: Address,
+    key: Buffer,
+    value: Buffer
+  ): void {
+    return (
+      DefaultStateManager as any
+    ).prototype.putContractTransientStorage.call(this, address, key, value);
   }
 
   public clearWarmedAccounts(): void {

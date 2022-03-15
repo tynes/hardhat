@@ -17,6 +17,7 @@ export async function instantiateVm(): Promise<VM> {
 
   const vm = new VM({ activatePrecompiles: true });
 
+  // @ts-ignore
   await vm.stateManager.putAccount(new Address(senderAddress), account);
 
   return vm;
@@ -73,6 +74,7 @@ export async function traceTransaction(
   vmTracer.enableTracing();
 
   try {
+    // @ts-ignore
     await vm.runTx({ tx: signedTx });
 
     const messageTrace = vmTracer.getLastTopLevelMessageTrace();
